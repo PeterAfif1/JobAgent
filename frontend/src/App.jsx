@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TailorForm from "./components/TailorForm.jsx";
+import ResultView from "./components/ResultView.jsx";
 import { postTailor } from "./api.js";
 
 export default function App() {
@@ -47,13 +48,7 @@ export default function App() {
           </div>
         )}
 
-        {/* Full results view arrives in the next chunk. */}
-        {result && !loading && (
-          <div className="card">
-            <p>Done — fit score {result.fit_score}/100 after{" "}
-              {result.iterations} pass(es). Results view coming next.</p>
-          </div>
-        )}
+        {result && !loading && <ResultView result={result} />}
       </main>
     </div>
   );
