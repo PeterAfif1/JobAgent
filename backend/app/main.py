@@ -29,7 +29,10 @@ def health() -> dict:
 @app.post("/tailor", response_model=TailorResponse)
 async def tailor(req: TailorRequest) -> TailorResponse:
     initial_state = {
-        "job_url": req.job_url,
+        "job_url": req.job_url or "",
+        # A pasted description seeds jd_text directly; scrape_jd then skips
+        # fetching and the graph proceeds straight to scoring.
+        "jd_text": (req.job_description or "").strip(),
         "resume_text": req.resume_text,
         "current_resume": req.resume_text,
         "iterations": 0,

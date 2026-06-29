@@ -4,11 +4,16 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class TailorRequest(BaseModel):
-    job_url: str = Field(..., description="URL of the job posting to scrape.")
+    job_url: Optional[str] = Field(
+        None, description="URL of the job posting to scrape."
+    )
+    job_description: Optional[str] = Field(
+        None, description="Pasted job description, used instead of scraping a URL."
+    )
     resume_text: str = Field(..., min_length=1, description="The user's resume.")
     threshold: Optional[int] = Field(
         None, ge=0, le=100, description="Target fit score; loop stops once met."
@@ -16,6 +21,14 @@ class TailorRequest(BaseModel):
     max_iterations: Optional[int] = Field(
         None, ge=1, le=10, description="Max rewrite passes before giving up."
     )
+
+    @model_validator(mode="after")
+    def require_url_or_description(self) -> "TailorRequest":
+        if not (self.job_url and self.job_url.strip()) and not (
+            self.job_description and self.job_description.strip()
+        ):
+            raise ValueError("Provide either job_url or job_description.")
+        return self
 
 
 class IterationOut(BaseModel):

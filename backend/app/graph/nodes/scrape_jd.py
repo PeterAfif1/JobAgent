@@ -34,9 +34,14 @@ def _extract_text(html: str) -> str:
 
 
 def scrape_jd(state: JobAgentState) -> dict:
+    # A pasted job description is already in state — skip the fetch entirely.
+    pasted = state.get("jd_text", "").strip()
+    if pasted:
+        return {"jd_text": pasted, "error": None}
+
     url = state.get("job_url", "").strip()
     if not url:
-        return {"jd_text": "", "error": "No job URL provided."}
+        return {"jd_text": "", "error": "No job URL or description provided."}
 
     try:
         resp = requests.get(url, headers=_HEADERS, timeout=20)

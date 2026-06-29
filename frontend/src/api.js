@@ -4,8 +4,16 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
  * Calls the backend agent. Returns the TailorResponse JSON.
  * Throws an Error with a readable message on failure.
  */
-export async function postTailor({ jobUrl, resumeText, threshold, maxIterations }) {
-  const body = { job_url: jobUrl, resume_text: resumeText };
+export async function postTailor({
+  jobUrl,
+  jobDescription,
+  resumeText,
+  threshold,
+  maxIterations,
+}) {
+  const body = { resume_text: resumeText };
+  if (jobUrl) body.job_url = jobUrl;
+  if (jobDescription) body.job_description = jobDescription;
   if (threshold != null && threshold !== "") body.threshold = Number(threshold);
   if (maxIterations != null && maxIterations !== "")
     body.max_iterations = Number(maxIterations);
