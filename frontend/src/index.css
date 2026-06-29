@@ -1,40 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --bg: #0f1115;
-  --surface: #1a1d24;
-  --border: #2a2f3a;
-  --text: #e7e9ee;
-  --muted: #9aa3b2;
-  --accent: #4f8cff;
-  --accent-hover: #3a76e8;
-  --error: #ff6b6b;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* dev-tool dark: zinc neutrals (never pure black) + single emerald accent */
+  --bg: #0a0a0b;
+  --surface: #131316;
+  --surface-2: #1a1a1e;
+  --border: #26262b;
+  --border-strong: #34343b;
+  --text: #fafafa;
+  --muted: #a1a1aa;
+  --accent: #10b981;
+  --accent-hover: #34d399;
+  --accent-soft: rgba(16, 185, 129, 0.12);
+  --error: #f87171;
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* faint top glow so the page isn't a flat slab */
+  background-image: radial-gradient(
+    60rem 30rem at 50% -10rem,
+    rgba(16, 185, 129, 0.06),
+    transparent 70%
+  );
+  background-repeat: no-repeat;
 }
 
 .page {
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 48px 20px 80px;
-}
-
-.header h1 {
-  margin: 0 0 8px;
-  font-size: 2rem;
-}
-
-.header p {
-  margin: 0 0 24px;
-  color: var(--muted);
-  line-height: 1.5;
+  padding: 56px 20px 96px;
 }
 
 .layout {
@@ -46,8 +55,10 @@ body {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset,
+    0 12px 32px -16px rgba(0, 0, 0, 0.6);
 }
 
 .field {
