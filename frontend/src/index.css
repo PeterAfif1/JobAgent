@@ -61,29 +61,6 @@ body {
     0 12px 32px -16px rgba(0, 0, 0, 0.6);
 }
 
-.status {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--muted);
-}
-
-.spinner {
-  width: 22px;
-  height: 22px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  flex-shrink: 0;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .banner.error {
   border-color: var(--error);
   color: var(--error);

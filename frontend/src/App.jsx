@@ -1,24 +1,30 @@
 import { useState } from "react";
 import TailorForm from "./components/TailorForm.jsx";
+import AgentProgress from "./components/AgentProgress.jsx";
 import ResultView from "./components/ResultView.jsx";
-import { postTailor } from "./api.js";
+import { streamTailor } from "./api.js";
 
 export default function App() {
-  const [loading, setLoading] = useState(false);
+  const [streaming, setStreaming] = useState(false);
+  const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
 
   async function handleSubmit(values) {
-    setLoading(true);
+    setStreaming(true);
     setError(null);
     setResult(null);
+    setEvents([]);
     try {
-      const data = await postTailor(values);
-      setResult(data);
+      await streamTailor(values, (ev) => {
+        if (ev.type === "complete") setResult(ev.result);
+        else if (ev.type === "error") setError(ev.detail);
+        else if (ev.type === "node") setEvents((prev) => [...prev, ev]);
+      });
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
+      setStreaming(false);
     }
   }
 
@@ -55,23 +61,19 @@ export default function App() {
       </header>
 
       <main className="layout">
-        <TailorForm onSubmit={handleSubmit} loading={loading} />
+        <TailorForm onSubmit={handleSubmit} loading={streaming} />
 
-        {loading && (
-          <div className="card status">
-            <div className="spinner" />
-            <p>Scraping the job description, scoring, and rewriting… this can
-              take up to a minute.</p>
-          </div>
+        {(streaming || (events.length > 0 && !result)) && (
+          <AgentProgress events={events} />
         )}
 
-        {error && (
+        {error && !streaming && (
           <div className="card banner error">
             <strong>Something went wrong:</strong> {error}
           </div>
         )}
 
-        {result && !loading && <ResultView result={result} />}
+        {result && !streaming && <ResultView result={result} />}
       </main>
     </div>
   );
