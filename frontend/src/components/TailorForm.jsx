@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { extractPdfText } from "../pdf.js";
 
 const EXAMPLE_JD = `Frontend Engineer (React / TypeScript)
 
@@ -57,6 +58,49 @@ export default function TailorForm({ onSubmit, loading }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [threshold, setThreshold] = useState(80);
   const [maxIterations, setMaxIterations] = useState(3);
+
+  // PDF upload
+  const fileInputRef = useRef(null);
+  const [pdfName, setPdfName] = useState("");
+  const [pdfStatus, setPdfStatus] = useState("idle"); // idle | reading | error
+  const [pdfError, setPdfError] = useState("");
+
+  async function handlePdf(e) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+
+    if (file.type !== "application/pdf") {
+      setPdfStatus("error");
+      setPdfError("That doesn't look like a PDF.");
+      return;
+    }
+
+    setPdfName(file.name);
+    setPdfStatus("reading");
+    setPdfError("");
+    try {
+      const text = await extractPdfText(file);
+      if (text.length < 30) {
+        setPdfStatus("error");
+        setPdfError(
+          "Couldn't read text from this PDF (it may be scanned). Paste your resume instead."
+        );
+        return;
+      }
+      setResumeText(text);
+      setPdfStatus("idle");
+    } catch {
+      setPdfStatus("error");
+      setPdfError("Failed to read the PDF. Paste your resume instead.");
+    }
+  }
+
+  function clearPdf() {
+    setPdfName("");
+    setPdfStatus("idle");
+    setPdfError("");
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -147,18 +191,50 @@ export default function TailorForm({ onSubmit, loading }) {
       )}
 
       <div className="mb-4">
-        <label className={labelCls} htmlFor="resume">
-          Your resume
-        </label>
+        <div className="mb-2 flex items-center justify-between">
+          <label className={`${labelCls} mb-0`} htmlFor="resume">
+            Your resume
+          </label>
+          <button
+            type="button"
+            className="text-sm font-medium text-accent transition-colors hover:text-accent-hover disabled:opacity-50"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={pdfStatus === "reading"}
+          >
+            {pdfStatus === "reading" ? "Reading…" : "Upload PDF"}
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="application/pdf,.pdf"
+            className="hidden"
+            onChange={handlePdf}
+          />
+        </div>
         <textarea
           id="resume"
           rows={12}
           className={`${inputCls} resize-y`}
-          placeholder="Paste your resume text here…"
+          placeholder="Paste your resume text here, or upload a PDF…"
           value={resumeText}
           onChange={(e) => setResumeText(e.target.value)}
           required
         />
+        {pdfName && pdfStatus !== "error" && (
+          <p className="mt-2 flex items-center gap-2 text-xs text-muted">
+            <span>Loaded {pdfName}</span>
+            <button
+              type="button"
+              className="text-accent hover:text-accent-hover"
+              onClick={clearPdf}
+            >
+              clear
+            </button>
+          </p>
+        )}
+        {pdfStatus === "error" && (
+          <p className="mt-2 text-xs text-danger">{pdfError}</p>
+        )}
       </div>
 
       <button
