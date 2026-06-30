@@ -26,6 +26,15 @@ export default {
         xl: "0.875rem",
         "2xl": "1.125rem",
       },
+      keyframes: {
+        "fade-up": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-up": "fade-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+      },
     },
   },
   plugins: [],

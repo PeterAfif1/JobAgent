@@ -64,17 +64,34 @@ export default function App() {
         <TailorForm onSubmit={handleSubmit} loading={streaming} />
 
         {(streaming || (events.length > 0 && !result)) && (
-          <AgentProgress events={events} />
+          <div className="animate-fade-up">
+            <AgentProgress events={events} />
+          </div>
         )}
 
         {error && !streaming && (
-          <div className="card banner error">
+          <div className="card banner error animate-fade-up">
             <strong>Something went wrong:</strong> {error}
           </div>
         )}
 
-        {result && !streaming && <ResultView result={result} />}
+        {result && !streaming && (
+          <div className="animate-fade-up">
+            <ResultView result={result} />
+          </div>
+        )}
       </main>
+
+      <footer className="mt-16 border-t border-line pt-6 font-mono text-xs text-muted">
+        <a
+          href="https://github.com/PeterAfif1/JobAgent"
+          target="_blank"
+          rel="noreferrer"
+          className="transition-colors hover:text-ink"
+        >
+          github.com/PeterAfif1/JobAgent
+        </a>
+      </footer>
     </div>
   );
 }

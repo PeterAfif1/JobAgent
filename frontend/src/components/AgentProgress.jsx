@@ -17,10 +17,13 @@ function describe(ev) {
         : `Scraped job description (${(d.jd_chars || 0).toLocaleString()} chars)`;
     case "score_fit":
       return `Scored ${d.fit_score}/100 (pass ${d.iteration})`;
-    case "analyze_gaps":
-      return `Found ${d.missing_keywords?.length ?? 0} missing keywords, ${
-        d.weak_bullets ?? 0
-      } weak bullets`;
+    case "analyze_gaps": {
+      const kw = d.missing_keywords?.length ?? 0;
+      const wb = d.weak_bullets ?? 0;
+      return `Found ${kw} missing keyword${kw === 1 ? "" : "s"}, ${wb} weak bullet${
+        wb === 1 ? "" : "s"
+      }`;
+    }
     case "rewrite_bullets":
       return `Rewrote bullets, starting pass ${d.iterations}`;
     case "finalize":

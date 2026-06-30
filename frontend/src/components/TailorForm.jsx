@@ -1,5 +1,33 @@
 import { useState } from "react";
 
+const EXAMPLE_JD = `Frontend Engineer (React / TypeScript)
+
+We are looking for a frontend engineer to own key parts of our web app. You will:
+- Build and maintain features in React and TypeScript
+- Lead work on our design system and shared component library
+- Improve performance, with a focus on Core Web Vitals
+- Set up and maintain CI/CD pipelines for fast, safe deploys
+- Collaborate closely with design and backend teams
+
+Requirements: 3+ years with React, strong TypeScript, experience with
+accessibility, testing, and modern build tooling.`;
+
+const EXAMPLE_RESUME = `Marcus Trujillo
+Frontend Developer | marcus.trujillo@example.com
+
+EXPERIENCE
+Frontend Developer, Brightline Apps (2021-present)
+- Worked on the company web app using React.
+- Helped build reusable UI components for the team.
+- Fixed performance issues on key pages.
+
+Web Developer, Contract (2019-2021)
+- Built marketing sites for small businesses.
+- Set up deployment for a few client projects.
+
+SKILLS
+JavaScript, React, HTML, CSS, Git`;
+
 const labelCls = "mb-2 block text-sm font-medium text-muted";
 const inputCls =
   "w-full rounded-lg border border-line bg-bg px-3.5 py-2.5 text-ink placeholder:text-muted/50 outline-none transition focus:border-accent/60 focus:ring-2 focus:ring-accent/15";
@@ -41,6 +69,12 @@ export default function TailorForm({ onSubmit, loading }) {
     });
   }
 
+  function fillExample() {
+    setMode("paste");
+    setJobDescription(EXAMPLE_JD);
+    setResumeText(EXAMPLE_RESUME);
+  }
+
   const hasJob = mode === "url" ? jobUrl.trim() : jobDescription.trim();
   const canSubmit = hasJob && resumeText.trim() && !loading;
 
@@ -51,6 +85,19 @@ export default function TailorForm({ onSubmit, loading }) {
 
   return (
     <form className="card" onSubmit={handleSubmit}>
+      <div className="mb-4 flex items-center justify-between">
+        <span className="font-mono text-xs uppercase tracking-wider text-muted">
+          New run
+        </span>
+        <button
+          type="button"
+          className="text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+          onClick={fillExample}
+        >
+          Try an example
+        </button>
+      </div>
+
       {/* segmented control: URL vs paste */}
       <div className="mb-5 grid grid-cols-2 gap-1 rounded-lg border border-line bg-bg p-1">
         <button type="button" className={segBtn(mode === "url")} onClick={() => setMode("url")}>

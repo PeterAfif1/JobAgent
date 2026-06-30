@@ -108,7 +108,7 @@ export default function ResultView({ result }) {
       )}
 
       {/* score gauge */}
-      <div className="card flex items-center gap-6">
+      <div className="card flex flex-col items-center gap-6 text-center sm:flex-row sm:text-left">
         <ScoreGauge score={fit_score} />
         <div>
           <SectionLabel>Final fit score</SectionLabel>
